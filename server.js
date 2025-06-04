@@ -66,6 +66,40 @@ app.post("/upload", upload.single("file"), (req, res)=>{
     }
 })
 
+
+app.post('/send-email', async(req, res)=>{
+    const {name, email, message} = req.body;
+    console.log("Received email form data", req.body);
+
+    try {
+        let transporter = nodemailer.createTransport({
+            service : 'gmail',
+            auth:{
+                user: 'jyotirmoytrain@gmail.com',
+                pass: 'heyi bpat vvaw cxxn'
+            }
+        });
+
+        let mailOptions = {
+            from:'jyotirmoytrain@gmail.com',
+            to : 'jyotirmoy.deb@skillsoft.com',
+            subject:`Message from ${name}`,
+            text:`From:${email}\n\n${message}`
+        }
+
+        await transporter.sendMail(mailOptions);
+        res.json({
+            message : 'Email sent successfully!'
+        })
+    }
+    catch(err){
+        console.error('Failed to send Email');
+        res.status(500).json({
+            message : 'Failed to send Email'
+        })
+    }
+})
+
 app.listen(PORT, (error)=>{
     if(error){
         console.error("Server problem", error);
